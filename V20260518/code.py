@@ -67,9 +67,13 @@ if __name__ == "__main__":
     epsilon, sigma, N = truss3d_element_stress(x1, x2, E, A, de)
     
     print(f"单元长度 L = {L:.4f} m")
-    print(f"方向余弦 (cx, cy, cz) = {dir_cos}")
-    print("\n单元刚度矩阵 Ke (N/m):")
-    print(Ke)
+    print(f"方向余弦 cx = {dir_cos[0]:.4f}（cy=0, cz=0）")
+    
+    # 提取一维杆单元的2×2刚度矩阵（仅保留x方向自由度）
+    Ke_1d = Ke[np.ix_([0, 3], [0, 3])]
+    print("\n一维杆单元刚度矩阵 Ke_1d (N/m):")
+    print(Ke_1d)
+    
     print(f"\n轴向应变 ε = {epsilon:.6e}")
     print(f"轴向应力 σ = {sigma/1e6:.2f} MPa")
     print(f"轴向轴力 N = {N:.2f} N")
@@ -88,7 +92,7 @@ if __name__ == "__main__":
     
     print(f"单元长度 L = {L:.4f} m")
     print(f"方向余弦 (cx, cy, cz) = {dir_cos}")
-    print("\n单元刚度矩阵 Ke (N/m):")
+    print("\n三维杆单元刚度矩阵 Ke (N/m):")
     print(Ke)
     print(f"\n轴向应变 ε = {epsilon:.6e}")
     print(f"轴向应力 σ = {sigma/1e6:.2f} MPa")
@@ -96,7 +100,7 @@ if __name__ == "__main__":
     
     # ====================== 单元刚度矩阵性质验证 ======================
     print("\n" + "="*60)
-    print("单元刚度矩阵性质验证")
+    print("单元刚度矩阵性质验证（基于算例2三维杆）")
     print("="*60)
     
     # 1. 对称性验证
@@ -124,6 +128,7 @@ if __name__ == "__main__":
     print(f"\n4. 刚体位移验证（整体平移）：")
     print(f"   节点内力列阵 Fe = {Fe_rigid}（接近零向量）")
     print(f"   内力最大值：{np.max(np.abs(Fe_rigid)):.4e} N") 
+    print(f"\n5. 刚度矩阵物理意义验证：")
     print(f"令第{j+1}个自由度（节点1的z方向）位移为1，其他固定：")
     print(f"计算得到的节点内力 Fe = {Fe_test}")
     print(f"刚度矩阵第{j+1}列 Ke[:,{j}] = {Ke[:, j]}")
